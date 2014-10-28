@@ -1,16 +1,19 @@
 <?php
-
-$list = ""; // put the CSV list here.
-
-$listex = explode("\n", $list);
+if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+require_once(dirname(__FILE__).DS.'init.php');
 
 // This is the example text you should send in your email to Upworthy
-?>
-Here's the samples:
+?><html>
+<head>
+	<title>Care2 Hashing</title>
+</head>
+<body>
+	<h2>Care2 Hashing</h2>
+	<p>Here's the samples:</p>
 
-someone@someTHing.com
-someone@something.org
-someone@something.net
+	<p>someone@someTHing.com<br />
+	someone@something.org<br />
+	someone@something.net</p>
 
 <?php
 // This is the list with CRLF line-endings that you should send as a separate CSV file.
