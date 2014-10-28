@@ -34,8 +34,10 @@ $salt = 'c2sl4cl';
 	echo '<p>';
 	foreach($csvFile as $index => $item) {
 		fwrite($fp, sha1($salt.strtolower(trim($item[0])))."\r\n");
-		echo '.'
-		ob_flush();
+		if($index % 20 === 0) {
+			echo '.'
+			ob_flush();
+		}
 	}
 	fclose($fp);
 	echo '</p>

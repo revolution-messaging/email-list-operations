@@ -32,8 +32,10 @@ echo "\r\n\r\n\r\n";
 	echo '<p>';
 	foreach($csvFile as $index => $item) {
 		fwrite($fp, md5(strtolower(trim($item[0])))."\r\n");
-		echo '.'
-		ob_flush();
+		if($index % 20 === 0) {
+			echo '.'
+			ob_flush();
+		}
 	}
 	fclose($fp);
 	echo '</p>
