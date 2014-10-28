@@ -1,0 +1,15 @@
+{
+    "name": "revmsg/hashing",
+    "description": "A repository for creating hashed email lists needed by various orgs/sites for email matching.",
+    "license": "Copyright",
+    "authors": [
+        {
+            "name": "Walker Hamilton",
+            "email": "walker@revolutionmessaging.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "keboola/csv": "dev-master"
+    }
+}
