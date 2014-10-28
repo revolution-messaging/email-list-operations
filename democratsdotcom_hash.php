@@ -8,6 +8,10 @@ require_once(dirname(__FILE__).DS.'init.php');
 	<title>Democrats.com Hashing</title>
 </head>
 <body>
+	<h2>Democrats.com Hashing</h2>
+	
+	<p>Most org/sites doing matching want to see samples to know you "did it right". You can send them the below.</p>
+
 	<p>Here's the samples:</p>
 	
 	<p>someone@someTHing.com<br />

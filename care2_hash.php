@@ -11,6 +11,9 @@ $salt = 'c2sl4cl';
 </head>
 <body>
 	<h2>Care2 Hashing</h2>
+	
+	<p>Most org/sites doing matching want to see samples to know you "did it right". You can send them the below.</p>
+
 	<p>Here's the samples:</p>
 
 	<p>someone@someTHing.com<br />

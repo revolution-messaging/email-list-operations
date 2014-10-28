@@ -5,10 +5,13 @@ require_once(dirname(__FILE__).DS.'init.php');
 // This is the example text you should send in your email to Upworthy
 ?><html>
 <head>
-	<title>Care2 Hashing</title>
+	<title>Upworthy Hashing</title>
 </head>
 <body>
-	<h2>Care2 Hashing</h2>
+	<h2>Upworthy Hashing</h2>
+	
+	<p>Most org/sites doing matching want to see samples to know you "did it right". You can send them the below.</p>
+	
 	<p>Here's the samples:</p>
 
 	<p>someone@someTHing.com<br />
@@ -17,14 +20,24 @@ require_once(dirname(__FILE__).DS.'init.php');
 
 <?php
 // This is the list with CRLF line-endings that you should send as a separate CSV file.
-echo md5(strtolower('someone@something.com'))."\r\n";
-echo md5(strtolower('someone@something.org'))."\r\n";
-echo md5(strtolower('someone@something.net'))."\r\n";
+echo '<p>'.md5(strtolower('someone@something.com'))."<br />\r\n";
+echo md5(strtolower('someone@something.org'))."<br />\r\n";
+echo md5(strtolower('someone@something.net'))."</p>\r\n";
 
 echo "\r\n\r\n\r\n";
 
-$fp = fopen('/Users/walker/Sites/list_match.csv', 'w');
-foreach($listex as $email) {
-	fwrite($fp, md5(strtolower(trim($email)))."\r\n");
-}
-fclose($fp);
+	$csvFile = new Keboola\Csv\CsvFile(dirname(__FILE__).DS.'list_to_hash.csv');
+	$fp = fopen(dirname(__FILE__).DS.'hashed_list.csv', 'w');
+
+	echo '<p>';
+	foreach($csvFile as $index => $item) {
+		fwrite($fp, md5(strtolower(trim($item[0])))."\r\n");
+		echo '.'
+		ob_flush();
+	}
+	fclose($fp);
+	echo '</p>
+			<p>Done.</p>
+		</body>
+</html>';
+exit();
