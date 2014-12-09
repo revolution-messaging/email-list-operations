@@ -33,7 +33,7 @@ require_once(dirname(__FILE__).DS.'init.php');
 	foreach($csvFile as $index => $item) {
 		fwrite($fp, md5(strtoupper(trim($item[0])))."\r\n");
 		if($index % 20 === 0) {
-			echo '.'
+			echo '.';
 			ob_flush();
 		}
 	}
