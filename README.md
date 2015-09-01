@@ -30,6 +30,12 @@ Example:
 
 Whether to upper or lower case the email before hashing (upper, lower, as-is). This defaults to "as-is".
 
+##### Header
+
+	-h --header <header>
+
+What the column that should be hashed is labelled within the CSV file. This defaults to "email".
+
 ##### Outpt
 
 	-o --output <output>

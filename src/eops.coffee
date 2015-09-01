@@ -21,10 +21,11 @@ log_lib = () ->
   console.log ''
 
 program
-  .version('0.0.1')
+  .version('2.0.4')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <case>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
+  .option('-h --header <header>', 'header on column that you want to hash. Defaults to "email".', null, 'email')
   .option('-o --output <output>', 'file name (exists.csv)')
   .option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5')
   .option('-s --salt <salt>', 'salt string. leave empty to not use a salt')
@@ -110,7 +111,7 @@ else
     fs.createReadStream program.compare
     .pipe csv()
     .on 'data', (hashed) ->
-      hashed_r[hashed_r.length] = hashed.email
+      hashed_r[hashed_r.length] = hashed[program.header]
     .on 'error', (err) ->
       console.log err
     .on 'end', () ->
@@ -119,13 +120,13 @@ else
       fs.createReadStream(program.args[0])
         .pipe csv()
         .on 'data', (unhashed) ->
-          to_check = md5 unhashed.email.toUpperCase()
+          to_check = md5 unhashed[program.header].toUpperCase()
           for key in hashed_r
             if key == to_check
               if program.output
-                fs.appendFileSync(program.output, unhashed.email.toLowerCase()+"\r\n")
+                fs.appendFileSync(program.output, unhashed[program.header].toLowerCase()+"\r\n")
               else
-                console.log unhashed.email.toLowerCase()
+                console.log unhashed[program.header].toLowerCase()
         .on 'end', () ->
           process.exit 0
         .on 'error', (err) ->
