@@ -24,8 +24,8 @@ program
   .version('2.0.4')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
-  .option('-e --case <case>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
-  .option('-h --header <header>', 'header on column that you want to hash. Defaults to "email".', null, 'email')
+  .option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
+  .option('-h --header <header>', 'header on column that you want to hash. Defaults to "email".', /^([a-zA-Z0-9]{1,})$/i, 'email')
   .option('-o --output <output>', 'file name (exists.csv)')
   .option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5')
   .option('-s --salt <salt>', 'salt string. leave empty to not use a salt')
@@ -140,10 +140,10 @@ else
     .on 'data', (unhashed) ->
       if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
         program.hash = 'md5'
-        program.case = 'upper'
+        program.alter = 'upper'
       else if program.args[0] == 'care2' && program.salt
         program.hash = 'sha1'
-        program.case = 'as-is'
+        program.alter = 'as-is'
         unhashed = program.salt + unhashed
       else if program.args[0] == 'care2' && !program.salt
         console.log 'If you want to do Care2 hashing, you must supply a salt string.'
@@ -152,16 +152,16 @@ else
         process.exit 1
       else if program.args[0] == 'vindico'
         program.hash = 'md5'
-        program.case = 'as-is'
+        program.alter = 'as-is'
       else if program.args[0] == 'upworthy'
         program.hash = 'md5'
-        program.case = 'lower'
+        program.alter = 'lower'
       
-      switch program.case
-        when 'upper' then cased_email = unhashed.toUpperCase()
-        when 'lower' then cased_email = unhashed.toLowerCase()
-        when 'as-is' then cased_email = unhashed
-        else cased_email = unhashed
+      switch program.alter
+        when 'upper' then cased_email = unhashed[program.header].toUpperCase()
+        when 'lower' then cased_email = unhashed[program.header].toLowerCase()
+        when 'as-is' then cased_email = unhashed[program.header]
+        else cased_email = unhashed[program.header]
       switch program.hash
         when 'md5' then hashed_email = md5 cased_email
         when 'sha1' then hashed_email = sha1 cased_email
