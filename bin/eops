@@ -31,7 +31,7 @@ log_lib = function() {
   return console.log('');
 };
 
-program.version('0.0.1').usage('eops [options] <emails.csv>').option('-c --compare <file>', 'hashed emails (already_hashed.csv)').option('-e --case <case>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is').option('-o --output <output>', 'file name (exists.csv)').option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5').option('-s --salt <salt>', 'salt string. leave empty to not use a salt').option('-p --preset <preset>', 'Convenience preset for poitical services and publications (dailykos, demsdotcom, vindico, care2, upworthy)', /^(dailykos|demsdotcom|vindico|care2|upworthy)$/i).parse(process.argv);
+program.version('0.0.1').usage('[options] <emails.csv>').option('-c --compare <file>', 'hashed emails (already_hashed.csv)').option('-e --case <case>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is').option('-o --output <output>', 'file name (exists.csv)').option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5').option('-s --salt <salt>', 'salt string. leave empty to not use a salt').option('-p --preset <preset>', 'Convenience preset for poitical services and publications (dailykos, demsdotcom, vindico, care2, upworthy)', /^(dailykos|demsdotcom|vindico|care2|upworthy)$/i).parse(process.argv);
 
 if (!program.args[0]) {
   console.log('No file input provided');
