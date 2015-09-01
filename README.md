@@ -4,6 +4,10 @@ This utility helps you create the hashed email lists needed by various orgs/site
 
 Make sure the CSV of email addresses you're about to run through here has CRLF line endings and the first line is the column header "email".
 
+#### Installation
+
+	npm install -g email-list-operations
+
 #### Basic Usage
 
 	eops -o hashed_emails.csv email_list.csv

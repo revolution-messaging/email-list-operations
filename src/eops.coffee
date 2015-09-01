@@ -22,6 +22,7 @@ log_lib = () ->
 
 program
   .version('0.0.1')
+  .usage('eops [options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <case>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
   .option('-o --output <output>', 'file name (exists.csv)')
