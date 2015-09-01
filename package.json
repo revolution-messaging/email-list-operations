@@ -1,14 +1,18 @@
 {
   "name": "email-list-operations",
-  "description": "You work in politics. You're always passing around CRM-ish CSVs. This library is for you.",
-  "private": true,
   "version": "2.0.0",
-  "authors": [
-    {
-      "name": "Walker Hamilton",
-      "email": "walker@revolutionmessaging.com"
-    }
+  "description": "You work in politics. You're always passing around CRM-ish CSVs. This library is for you.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revolution-messaging/hashing.git"
+  },
+  "keywords": [
+    "email",
+    "hashing",
+    "politics"
   ],
+  "author": "Walker Hamilton",
+  "license": "MIT",
   "dependencies": {
     "commander": "2.8.1",
     "csv-parser": "1.7.0",
@@ -25,5 +29,9 @@
   },
   "engines": {
     "iojs": "3.2.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/revolution-messaging/hashing/issues"
+  },
+  "homepage": "https://github.com/revolution-messaging/hashing#readme"
 }
