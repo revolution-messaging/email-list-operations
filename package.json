@@ -1,5 +1,5 @@
 {
-  "name": "email-list-hashing",
+  "name": "email-list-operations",
   "description": "You work in politics. You're always passing around CRM-ish CSVs. This library is for you.",
   "private": true,
   "version": "2.0.0",
