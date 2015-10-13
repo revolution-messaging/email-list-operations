@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 ;
-var crypto, csv, do_hash, email, fs, hashed_r, in_array, log_lib, output_file_check, program;
+var crypto, csv, do_hash, e, email, error, error1, fs, hashed_r, in_array, log_lib, output_file_check, program;
 
 program = require('commander');
 
@@ -157,56 +157,78 @@ if (!program.args[0]) {
     }).on('error', function(err) {
       return console.log(err);
     }).on('end', function() {
-      var output_file_check;
+      var e, error, error1, output_file_check;
+      try {
+        output_file_check = fs.statSync(program.output);
+        if (program.output && output_file_check.isFile()) {
+          fs.unlinkSync(program.output);
+        }
+      } catch (error) {
+        e = error;
+      }
+      try {
+        return fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
+          var i, key, len, results, to_check;
+          if (email.validate(unhashed[program.header])) {
+            to_check = do_hash(unhashed, program);
+            results = [];
+            for (i = 0, len = hashed_r.length; i < len; i++) {
+              key = hashed_r[i];
+              if (key === to_check) {
+                if (program.output) {
+                  results.push(fs.appendFileSync(program.output, unhashed[program.header].toLowerCase() + "\r\n"));
+                } else {
+                  results.push(console.log(unhashed[program.header].toLowerCase()));
+                }
+              } else {
+                results.push(void 0);
+              }
+            }
+            return results;
+          } else {
+            return console.log('This email appears to be invalid: ' + unhashed[program.header] + "\r\n");
+          }
+        }).on('end', function() {
+          return process.exit(0);
+        }).on('error', function(err) {
+          return console.log(err);
+        });
+      } catch (error1) {
+        e = error1;
+        return console.log(e);
+      }
+    });
+  } else {
+    try {
       output_file_check = fs.statSync(program.output);
       if (program.output && output_file_check.isFile()) {
         fs.unlinkSync(program.output);
+        fs.appendFileSync(program.output, 'email' + "\r\n");
       }
-      return fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
-        var i, key, len, results, to_check;
-        if (email.validate(unhashed)) {
-          to_check = do_hash(unhashed, program);
-          results = [];
-          for (i = 0, len = hashed_r.length; i < len; i++) {
-            key = hashed_r[i];
-            if (key === to_check) {
-              if (program.output) {
-                results.push(fs.appendFileSync(program.output, unhashed[program.header].toLowerCase() + "\r\n"));
-              } else {
-                results.push(console.log(unhashed[program.header].toLowerCase()));
-              }
-            } else {
-              results.push(void 0);
-            }
+    } catch (error) {
+      e = error;
+    }
+    try {
+      fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
+        var hashed_email;
+        if (email.validate(unhashed[program.header])) {
+          hashed_email = do_hash(unhashed, program);
+          if (program.output) {
+            return fs.appendFileSync(program.output, hashed_email + "\r\n");
+          } else {
+            return console.log(hashed_email);
           }
-          return results;
+        } else {
+          return console.log('This email appears to be invalid: ' + unhashed[program.header] + "\r\n");
         }
       }).on('end', function() {
         return process.exit(0);
       }).on('error', function(err) {
-        return console.log(err);
+        return console.log('An error occurred:', err);
       });
-    });
-  } else {
-    output_file_check = fs.statSync(program.output);
-    if (program.output && output_file_check.isFile()) {
-      fs.unlinkSync(program.output);
-      fs.appendFileSync(program.output, 'email' + "\r\n");
+    } catch (error1) {
+      e = error1;
+      console.log(e);
     }
-    fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
-      var hashed_email;
-      if (email.validate(unhashed)) {
-        hashed_email = do_hash(unhashed, program);
-        if (program.output) {
-          return fs.appendFileSync(program.output, hashed_email + "\r\n");
-        } else {
-          return console.log(hashed_email);
-        }
-      }
-    }).on('end', function() {
-      return process.exit(0);
-    }).on('error', function(err) {
-      return console.log('An error occurred:', err);
-    });
   }
 }

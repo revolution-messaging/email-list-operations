@@ -163,40 +163,55 @@ else
     .on 'error', (err) ->
       console.log err
     .on 'end', () ->
+      try
+        output_file_check = fs.statSync(program.output)
+        if program.output && output_file_check.isFile()
+          fs.unlinkSync(program.output)
+      catch e
+        # Nada
+      try
+        fs.createReadStream(program.args[0])
+          .pipe csv()
+          .on 'data', (unhashed) ->
+            if email.validate(unhashed[program.header])
+              to_check = do_hash(unhashed, program)
+              for key in hashed_r
+                if key == to_check
+                  if program.output
+                    fs.appendFileSync(program.output, unhashed[program.header].toLowerCase()+"\r\n")
+                  else
+                    console.log unhashed[program.header].toLowerCase()
+            else
+              console.log 'This email appears to be invalid: '+unhashed[program.header]+"\r\n"
+          .on 'end', () ->
+            process.exit 0
+          .on 'error', (err) ->
+            console.log err
+      catch e
+        console.log e
+  else
+    try
       output_file_check = fs.statSync(program.output)
       if program.output && output_file_check.isFile()
         fs.unlinkSync(program.output)
-      fs.createReadStream(program.args[0])
-        .pipe csv()
-        .on 'data', (unhashed) ->
-          if email.validate(unhashed)
-            to_check = do_hash(unhashed, program)
-            for key in hashed_r
-              if key == to_check
-                if program.output
-                  fs.appendFileSync(program.output, unhashed[program.header].toLowerCase()+"\r\n")
-                else
-                  console.log unhashed[program.header].toLowerCase()
-        .on 'end', () ->
-          process.exit 0
-        .on 'error', (err) ->
-          console.log err
-  else
-    output_file_check = fs.statSync(program.output)
-    if program.output && output_file_check.isFile()
-      fs.unlinkSync(program.output)
-      fs.appendFileSync(program.output, 'email'+"\r\n")
-    fs.createReadStream program.args[0]
-    .pipe csv()
-    .on 'data', (unhashed) ->
-      if email.validate(unhashed)
-        hashed_email = do_hash(unhashed, program)
-      
-        if program.output
-          fs.appendFileSync(program.output, hashed_email+"\r\n")
+        fs.appendFileSync(program.output, 'email'+"\r\n")
+    catch e
+      # Nada
+    try
+      fs.createReadStream program.args[0]
+      .pipe csv()
+      .on 'data', (unhashed) ->
+        if email.validate(unhashed[program.header])
+          hashed_email = do_hash(unhashed, program)
+          if program.output
+            fs.appendFileSync(program.output, hashed_email+"\r\n")
+          else
+            console.log hashed_email
         else
-          console.log hashed_email
-    .on 'end', () ->
-      process.exit 0
-    .on 'error', (err) ->
-      console.log 'An error occurred:', err
+          console.log 'This email appears to be invalid: '+unhashed[program.header]+"\r\n"
+      .on 'end', () ->
+        process.exit 0
+      .on 'error', (err) ->
+        console.log 'An error occurred:', err
+    catch e
+      console.log e
