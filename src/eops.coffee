@@ -21,8 +21,45 @@ log_lib = () ->
   console.log "Here's the samples:"
   console.log ''
 
+do_hash = (program) ->
+  if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
+    program.hash = 'md5'
+    program.alter = 'upper'
+  if program.args[0] == 'google'
+    program.hash = 'sha256'
+    program.alter = 'lower'
+  else if program.args[0] == 'care2' && program.salt
+    program.hash = 'sha1'
+    program.alter = 'as-is'
+    unhashed = program.salt + unhashed
+  else if program.args[0] == 'care2' && !program.salt
+    console.log 'If you want to do Care2 hashing, you must supply a salt string.'
+    console.log ''
+    console.log 'For example:'
+    console.log 'eops --preset care2 --salt 8zQgWkEKYH4VxHcHN3ecUiFEH emails.csv'
+    process.exit 1
+  else if program.args[0] == 'vindico'
+    program.hash = 'md5'
+    program.alter = 'as-is'
+  else if program.args[0] == 'upworthy'
+    program.hash = 'md5'
+    program.alter = 'lower'
+
+  switch program.alter
+    when 'upper' then cased_email = unhashed[program.header].toUpperCase()
+    when 'lower' then cased_email = unhashed[program.header].toLowerCase()
+    when 'as-is' then cased_email = unhashed[program.header]
+    else cased_email = unhashed[program.header]
+  switch program.hash
+    when 'md5' then hashed_email = md5 cased_email
+    when 'sha1' then hashed_email = sha1 cased_email
+    when 'sha256' then hashed_email = crypto.createHash('sha256').update(cased_email).digest('hex')
+    else hashed_email = md5 cased_email
+  
+  return hashed_email
+
 program
-  .version('2.1.5')
+  .version('2.1.6')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
@@ -95,6 +132,7 @@ else if program.args[0] == 'care2' && program.salt
 else if program.args[0] == 'care2' && !program.salt
   console.log 'If you want to do Care2 hashing, you must supply a salt string.'
   console.log ''
+  console.log 'For example:'
   console.log 'eops --preset care2 --salt 8zQgWkEKYH4VxHcHN3ecUiFEH emails.csv'
 else if program.args[0] == 'vindico'
   console.log 'Vindico Hashing'
@@ -131,7 +169,7 @@ else
       fs.createReadStream(program.args[0])
         .pipe csv()
         .on 'data', (unhashed) ->
-          to_check = md5 unhashed[program.header].toUpperCase()
+          to_check = do_hash(unhashed, program)
           for key in hashed_r
             if key == to_check
               if program.output
@@ -149,38 +187,7 @@ else
     fs.createReadStream program.args[0]
     .pipe csv()
     .on 'data', (unhashed) ->
-      if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
-        program.hash = 'md5'
-        program.alter = 'upper'
-      if program.args[0] == 'google'
-        program.hash = 'sha256'
-        program.alter = 'lower'
-      else if program.args[0] == 'care2' && program.salt
-        program.hash = 'sha1'
-        program.alter = 'as-is'
-        unhashed = program.salt + unhashed
-      else if program.args[0] == 'care2' && !program.salt
-        console.log 'If you want to do Care2 hashing, you must supply a salt string.'
-        console.log ''
-        console.log 'eops --preset care2 --salt 8zQgWkEKYH4VxHcHN3ecUiFEH emails.csv'
-        process.exit 1
-      else if program.args[0] == 'vindico'
-        program.hash = 'md5'
-        program.alter = 'as-is'
-      else if program.args[0] == 'upworthy'
-        program.hash = 'md5'
-        program.alter = 'lower'
-      
-      switch program.alter
-        when 'upper' then cased_email = unhashed[program.header].toUpperCase()
-        when 'lower' then cased_email = unhashed[program.header].toLowerCase()
-        when 'as-is' then cased_email = unhashed[program.header]
-        else cased_email = unhashed[program.header]
-      switch program.hash
-        when 'md5' then hashed_email = md5 cased_email
-        when 'sha1' then hashed_email = sha1 cased_email
-        when 'sha256' then hashed_email = crypto.createHash('sha256').update(cased_email).digest('hex')
-        else hashed_email = md5 cased_email
+      hashed_email = do_hash(unhashed, program)
       
       if program.output
         fs.appendFileSync(program.output, hashed_email+"\r\n")
