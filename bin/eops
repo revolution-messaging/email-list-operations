@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 ;
-var crypto, csv, do_hash, fs, hashed_r, in_array, log_lib, program;
+var crypto, csv, do_hash, email, fs, hashed_r, in_array, log_lib, program;
 
 program = require('commander');
 
@@ -9,6 +9,8 @@ fs = require('fs');
 csv = require('csv-parser');
 
 crypto = require('crypto');
+
+email = require('email-validator');
 
 in_array = function(needle, haystack) {
   var i, key, len;
@@ -160,21 +162,23 @@ if (!program.args[0]) {
       }
       return fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
         var i, key, len, results, to_check;
-        to_check = do_hash(unhashed, program);
-        results = [];
-        for (i = 0, len = hashed_r.length; i < len; i++) {
-          key = hashed_r[i];
-          if (key === to_check) {
-            if (program.output) {
-              results.push(fs.appendFileSync(program.output, unhashed[program.header].toLowerCase() + "\r\n"));
+        if (email.validate(unhashed)) {
+          to_check = do_hash(unhashed, program);
+          results = [];
+          for (i = 0, len = hashed_r.length; i < len; i++) {
+            key = hashed_r[i];
+            if (key === to_check) {
+              if (program.output) {
+                results.push(fs.appendFileSync(program.output, unhashed[program.header].toLowerCase() + "\r\n"));
+              } else {
+                results.push(console.log(unhashed[program.header].toLowerCase()));
+              }
             } else {
-              results.push(console.log(unhashed[program.header].toLowerCase()));
+              results.push(void 0);
             }
-          } else {
-            results.push(void 0);
           }
+          return results;
         }
-        return results;
       }).on('end', function() {
         return process.exit(0);
       }).on('error', function(err) {
@@ -188,11 +192,13 @@ if (!program.args[0]) {
     }
     fs.createReadStream(program.args[0]).pipe(csv()).on('data', function(unhashed) {
       var hashed_email;
-      hashed_email = do_hash(unhashed, program);
-      if (program.output) {
-        return fs.appendFileSync(program.output, hashed_email + "\r\n");
-      } else {
-        return console.log(hashed_email);
+      if (email.validate(unhashed)) {
+        hashed_email = do_hash(unhashed, program);
+        if (program.output) {
+          return fs.appendFileSync(program.output, hashed_email + "\r\n");
+        } else {
+          return console.log(hashed_email);
+        }
       }
     }).on('end', function() {
       return process.exit(0);

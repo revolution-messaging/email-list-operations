@@ -5,6 +5,7 @@ program = require 'commander'
 fs = require 'fs'
 csv = require 'csv-parser'
 crypto = require 'crypto'
+email = require 'email-validator'
 
 in_array = (needle, haystack) ->
   for key in haystack
@@ -167,13 +168,14 @@ else
       fs.createReadStream(program.args[0])
         .pipe csv()
         .on 'data', (unhashed) ->
-          to_check = do_hash(unhashed, program)
-          for key in hashed_r
-            if key == to_check
-              if program.output
-                fs.appendFileSync(program.output, unhashed[program.header].toLowerCase()+"\r\n")
-              else
-                console.log unhashed[program.header].toLowerCase()
+          if email.validate(unhashed)
+            to_check = do_hash(unhashed, program)
+            for key in hashed_r
+              if key == to_check
+                if program.output
+                  fs.appendFileSync(program.output, unhashed[program.header].toLowerCase()+"\r\n")
+                else
+                  console.log unhashed[program.header].toLowerCase()
         .on 'end', () ->
           process.exit 0
         .on 'error', (err) ->
@@ -185,12 +187,13 @@ else
     fs.createReadStream program.args[0]
     .pipe csv()
     .on 'data', (unhashed) ->
-      hashed_email = do_hash(unhashed, program)
+      if email.validate(unhashed)
+        hashed_email = do_hash(unhashed, program)
       
-      if program.output
-        fs.appendFileSync(program.output, hashed_email+"\r\n")
-      else
-        console.log hashed_email
+        if program.output
+          fs.appendFileSync(program.output, hashed_email+"\r\n")
+        else
+          console.log hashed_email
     .on 'end', () ->
       process.exit 0
     .on 'error', (err) ->
