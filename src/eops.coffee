@@ -4,6 +4,7 @@
 program = require 'commander'
 fs = require 'fs'
 csv = require 'csv-parser'
+crypto = require 'crypto'
 md5 = require 'md5'
 sha1 = require 'sha1'
 
@@ -68,9 +69,25 @@ else if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  console.log md5('someone@something.com'.toUpperCase())
+  console.log md5('someone@someTHing.com'.toUpperCase())
   console.log md5('someone@something.org'.toUpperCase())
   console.log md5('someone@something.net'.toUpperCase())
+else if program.args[0] == 'google'
+  console.log 'Google Hashing'
+  log_lib()
+  console.log 'someone@someTHing.com'
+  console.log 'someone@something.org'
+  console.log 'someone@something.net'
+  console.log ''
+  shasum = crypto.createHash('sha1256')
+  shasum.update('someone@someTHing.com'.toLowerCase())
+  console.log shasum.digest('hex')
+  shasum = crypto.createHash('sha1256')
+  shasum.update('someone@something.org'.toLowerCase())
+  console.log shasum.digest('hex')
+  shasum = crypto.createHash('sha1256')
+  shasum.update('someone@something.net'.toLowerCase())
+  console.log shasum.digest('hex')
 else if program.args[0] == 'care2' && program.salt
   console.log 'Care2 Hashing'
   log_lib()
