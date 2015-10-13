@@ -62,4 +62,4 @@ A salt string. Leave this empty to not use a salt.
 
 	-p --preset <preset>
 
-This allows you to specify convenience presets for political services and publications (dailykos, demsdotcom, vindico, care2, upworthy) so that you don't have to set the hash and case options.
+This allows you to specify convenience presets for political services and publications (dailykos, google, demsdotcom, vindico, care2, upworthy) so that you don't have to set the hash and case options.
