@@ -5,8 +5,6 @@ program = require 'commander'
 fs = require 'fs'
 csv = require 'csv-parser'
 crypto = require 'crypto'
-md5 = require 'md5'
-sha1 = require 'sha1'
 
 in_array = (needle, haystack) ->
   for key in haystack
@@ -51,10 +49,10 @@ do_hash = (program) ->
     when 'as-is' then cased_email = unhashed[program.header]
     else cased_email = unhashed[program.header]
   switch program.hash
-    when 'md5' then hashed_email = md5 cased_email
-    when 'sha1' then hashed_email = sha1 cased_email
+    when 'md5' then hashed_email = crypto.createHash('md5').update(cased_email).digest('hex')
+    when 'sha1' then hashed_email = crypto.createHash('sha1').update(cased_email).digest('hex')
     when 'sha256' then hashed_email = crypto.createHash('sha256').update(cased_email).digest('hex')
-    else hashed_email = md5 cased_email
+    else hashed_email = crypto.createHash('md5').update(cased_email).digest('hex')
   
   return hashed_email
 
@@ -106,9 +104,9 @@ else if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  console.log md5('someone@someTHing.com'.toUpperCase())
-  console.log md5('someone@something.org'.toUpperCase())
-  console.log md5('someone@something.net'.toUpperCase())
+  console.log crypto.createHash('md5').update('someone@someTHing.com'.toUpperCase()).digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.org'.toUpperCase()).digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.net'.toUpperCase()).digest('hex')
 else if program.args[0] == 'google'
   console.log 'Google Hashing'
   log_lib()
@@ -126,9 +124,9 @@ else if program.args[0] == 'care2' && program.salt
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  console.log sha1(program.salt+'someone@something.com')
-  console.log sha1(program.salt+'someone@something.org')
-  console.log sha1(program.salt+'someone@something.net')
+  console.log crypto.createHash('sha1').update(program.salt+'someone@something.com').digest('hex')
+  console.log crypto.createHash('sha1').update(program.salt+'someone@something.org').digest('hex')
+  console.log crypto.createHash('sha1').update(program.salt+'someone@something.net').digest('hex')
 else if program.args[0] == 'care2' && !program.salt
   console.log 'If you want to do Care2 hashing, you must supply a salt string.'
   console.log ''
@@ -141,9 +139,9 @@ else if program.args[0] == 'vindico'
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  console.log md5('someone@something.com')
-  console.log md5('someone@something.org')
-  console.log md5('someone@something.net')
+  console.log crypto.createHash('md5').update('someone@something.com').digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.org').digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.net').digest('hex')
 else if program.args[0] == 'upworthy'
   console.log 'Upworthy Hashing'
   log_lib()
@@ -151,9 +149,9 @@ else if program.args[0] == 'upworthy'
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  console.log md5('someone@something.com'.toLowerCase())
-  console.log md5('someone@something.org'.toLowerCase())
-  console.log md5('someone@something.net'.toLowerCase())
+  console.log crypto.createHash('md5').update('someone@something.com'.toLowerCase()).digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.org'.toLowerCase()).digest('hex')
+  console.log crypto.createHash('md5').update('someone@something.net'.toLowerCase()).digest('hex')
 else
   if program.compare
     hashed_r = []
