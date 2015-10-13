@@ -57,8 +57,15 @@ do_hash = (unhashed, program) ->
   
   return hashed_email
 
+try
+  error_file = fs.statSync('eops_errors.log')
+  if program.output && output_file_check.isFile()
+    fs.unlinkSync(program.output)
+catch e
+  # Nada
+
 program
-  .version('2.2.0')
+  .version('2.2.1')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
@@ -182,7 +189,7 @@ else
                   else
                     console.log unhashed[program.header].toLowerCase()
             else
-              console.log 'This email appears to be invalid: '+unhashed[program.header]+"\r\n"
+              fs.appendFileSync('eops_errors.log', 'This email appears to be invalid: '+unhashed[program.header]+"\r\n")
           .on 'end', () ->
             process.exit 0
           .on 'error', (err) ->
@@ -208,7 +215,7 @@ else
           else
             console.log hashed_email
         else
-          console.log 'This email appears to be invalid: '+unhashed[program.header]+"\r\n"
+          fs.appendFileSync('eops_errors.log', 'This email appears to be invalid: '+unhashed[program.header]+"\r\n")
       .on 'end', () ->
         process.exit 0
       .on 'error', (err) ->
