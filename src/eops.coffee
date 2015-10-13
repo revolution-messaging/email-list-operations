@@ -20,7 +20,7 @@ log_lib = () ->
   console.log "Here's the samples:"
   console.log ''
 
-do_hash = (program) ->
+do_hash = (unhashed, program) ->
   if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
     program.hash = 'md5'
     program.alter = 'upper'

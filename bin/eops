@@ -31,8 +31,8 @@ log_lib = function() {
   return console.log('');
 };
 
-do_hash = function(program) {
-  var cased_email, hashed_email, unhashed;
+do_hash = function(unhashed, program) {
+  var cased_email, hashed_email;
   if (program.args[0] === 'demsdotcom' || program.args[0] === 'dailykos') {
     program.hash = 'md5';
     program.alter = 'upper';
