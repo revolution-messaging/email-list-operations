@@ -1,4 +1,4 @@
-`#!/usr/bin/env iojs
+`#!/usr/bin/env node
 `
 
 program = require 'commander'
@@ -79,15 +79,9 @@ else if program.args[0] == 'google'
   console.log 'someone@something.org'
   console.log 'someone@something.net'
   console.log ''
-  shasum = crypto.createHash('sha1256')
-  shasum.update('someone@someTHing.com'.toLowerCase())
-  console.log shasum.digest('hex')
-  shasum = crypto.createHash('sha1256')
-  shasum.update('someone@something.org'.toLowerCase())
-  console.log shasum.digest('hex')
-  shasum = crypto.createHash('sha1256')
-  shasum.update('someone@something.net'.toLowerCase())
-  console.log shasum.digest('hex')
+  console.log crypto.createHash('sha256').update('someone@someTHing.com'.toLowerCase()).digest('hex')
+  console.log crypto.createHash('sha256').update('someone@something.org'.toLowerCase()).digest('hex')
+  console.log crypto.createHash('sha256').update('someone@something.net'.toUpperCase()).digest('hex')
 else if program.args[0] == 'care2' && program.salt
   console.log 'Care2 Hashing'
   log_lib()
@@ -158,6 +152,9 @@ else
       if program.args[0] == 'demsdotcom' || program.args[0] == 'dailykos'
         program.hash = 'md5'
         program.alter = 'upper'
+      if program.args[0] == 'google'
+        program.hash = 'sha256'
+        program.alter = 'lower'
       else if program.args[0] == 'care2' && program.salt
         program.hash = 'sha1'
         program.alter = 'as-is'
@@ -182,6 +179,7 @@ else
       switch program.hash
         when 'md5' then hashed_email = md5 cased_email
         when 'sha1' then hashed_email = sha1 cased_email
+        when 'sha256' then hashed_email = crypto.createHash('sha256').update(cased_email).digest('hex')
         else hashed_email = md5 cased_email
       
       if program.output

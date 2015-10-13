@@ -28,7 +28,7 @@
     "eops": "./bin/eops"
   },
   "engines": {
-    "iojs": "3.2.0"
+    "node": "4.2.0"
   },
   "bugs": {
     "url": "https://github.com/revolution-messaging/hashing/issues"
