@@ -22,7 +22,7 @@ log_lib = () ->
   console.log ''
 
 program
-  .version('2.0.6')
+  .version('2.1.1')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
