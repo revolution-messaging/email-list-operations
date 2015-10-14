@@ -57,6 +57,26 @@ do_hash = (unhashed, program) ->
   
   return hashed_email
 
+attempt_fix = (email) ->
+  email = email.replace('.@', '@')
+  email = email.replace('..', '.')
+  email = email.replace('`', '')
+  email = email.replace('\+[a-zA-Z0-9\-\_\+]{0,}\@', '@')
+  email = email.replace(/\.com\.com$/, '.com')
+  email = email.replace(/\@gnail/, '@gmail')
+  email = email.replace(/\@gmail\.com\@gmail\.com$/, '@gmail.com')
+  email = email.replace(/\@yahoo\.com\@yahoo\.com$/, '@yahoo.com')
+  email = email.replace(/\@hotmail\.com\@hotmail\.com$/, '@hotmail.com')
+  email = email.replace(/\@gmail$/, '@gmail.com')
+  email = email.replace(/\@rcn$/, '@rcn.com')
+  email = email.replace(/\@cox$/, '@cox.net')
+  email = email.replace(/\@charter$/, '@charter.net')
+  email = email.replace(/\@hotmail$/, '@hotmail.com')
+  email = email.replace(/\@yahoo$/, '@yahoo.com')
+  email = email.replace(/\@msn$/, '@msn.com')
+  
+  return email
+
 try
   error_file = fs.statSync('eops_errors.log')
   if program.output && output_file_check.isFile()
@@ -208,6 +228,7 @@ else
       fs.createReadStream program.args[0]
       .pipe csv()
       .on 'data', (unhashed) ->
+        unhashed[program.header] = attempt_fix(unhashed[program.header])
         if email.validate(unhashed[program.header])
           hashed_email = do_hash(unhashed, program)
           if program.output
