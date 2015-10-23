@@ -93,12 +93,16 @@ attempt_fix = function(email) {
   email = email.replace('\+[a-zA-Z0-9\-\_\+]{0,}\@', '@');
   email = email.replace(/\.com\.com$/, '.com');
   email = email.replace(/\@gnail/, '@gmail');
+  email = email.replace(/\@aol\.com\@aol\.com$/, '@aol.com');
   email = email.replace(/\@gmail\.com\@gmail\.com$/, '@gmail.com');
   email = email.replace(/\@yahoo\.com\@yahoo\.com$/, '@yahoo.com');
   email = email.replace(/\@hotmail\.com\@hotmail\.com$/, '@hotmail.com');
   email = email.replace(/\@gmail$/, '@gmail.com');
   email = email.replace(/\@rcn$/, '@rcn.com');
+  email = email.replace(/\@aol$/, '@aol.com');
+  email = email.replace(/\@ymail$/, '@ymail.com');
   email = email.replace(/\@cox$/, '@cox.net');
+  email = email.replace(/\@sbcglobal$/, '@sbcglobal.net');
   email = email.replace(/\@charter$/, '@charter.net');
   email = email.replace(/\@hotmail$/, '@hotmail.com');
   email = email.replace(/\@yahoo$/, '@yahoo.com');
@@ -115,7 +119,7 @@ try {
   e = error;
 }
 
-program.version('2.2.1').usage('[options] <emails.csv>').option('-c --compare <file>', 'hashed emails (already_hashed.csv)').option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is').option('-h --header <header>', 'header on column that you want to hash. Defaults to "email".', /^([a-zA-Z0-9]{1,})$/i, 'email').option('-o --output <output>', 'file name (exists.csv)').option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5').option('-s --salt <salt>', 'salt string. leave empty to not use a salt').option('-p --preset <preset>', 'Convenience preset for poitical services and publications (dailykos, demsdotcom, vindico, care2, upworthy)', /^(dailykos|demsdotcom|vindico|care2|upworthy)$/i).parse(process.argv);
+program.version('2.3.0').usage('[options] <emails.csv>').option('-c --compare <file>', 'hashed emails (already_hashed.csv)').option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is').option('-h --header <header>', 'header on column that you want to hash. Defaults to "email".', /^([a-zA-Z0-9]{1,})$/i, 'email').option('-o --output <output>', 'file name (exists.csv)').option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5').option('-s --salt <salt>', 'salt string. leave empty to not use a salt').option('-p --preset <preset>', 'Convenience preset for poitical services and publications (google, dailykos, demsdotcom, vindico, care2, upworthy)', /^(google|dailykos|demsdotcom|vindico|care2|upworthy)$/i).parse(process.argv);
 
 if (!program.args[0]) {
   console.log('No file input provided');

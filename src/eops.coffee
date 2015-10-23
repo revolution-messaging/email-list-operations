@@ -64,12 +64,16 @@ attempt_fix = (email) ->
   email = email.replace('\+[a-zA-Z0-9\-\_\+]{0,}\@', '@')
   email = email.replace(/\.com\.com$/, '.com')
   email = email.replace(/\@gnail/, '@gmail')
+  email = email.replace(/\@aol\.com\@aol\.com$/, '@aol.com')
   email = email.replace(/\@gmail\.com\@gmail\.com$/, '@gmail.com')
   email = email.replace(/\@yahoo\.com\@yahoo\.com$/, '@yahoo.com')
   email = email.replace(/\@hotmail\.com\@hotmail\.com$/, '@hotmail.com')
   email = email.replace(/\@gmail$/, '@gmail.com')
   email = email.replace(/\@rcn$/, '@rcn.com')
+  email = email.replace(/\@aol$/, '@aol.com')
+  email = email.replace(/\@ymail$/, '@ymail.com')
   email = email.replace(/\@cox$/, '@cox.net')
+  email = email.replace(/\@sbcglobal$/, '@sbcglobal.net')
   email = email.replace(/\@charter$/, '@charter.net')
   email = email.replace(/\@hotmail$/, '@hotmail.com')
   email = email.replace(/\@yahoo$/, '@yahoo.com')
@@ -85,7 +89,7 @@ catch e
   # Nada
 
 program
-  .version('2.3.0')
+  .version('2.3.1')
   .usage('[options] <emails.csv>')
   .option('-c --compare <file>', 'hashed emails (already_hashed.csv)')
   .option('-e --case <alter>', 'whether to upper or lower case the email before hashing (upper, lower, as-is)', /^(upper|lower|as\-is)$/i, 'as-is')
@@ -93,32 +97,9 @@ program
   .option('-o --output <output>', 'file name (exists.csv)')
   .option('-r --hash <hash>', 'hash library (sha1, md5)', /^(sha|md5)$/i, 'md5')
   .option('-s --salt <salt>', 'salt string. leave empty to not use a salt')
-  .option('-p --preset <preset>', 'Convenience preset for poitical services and publications (dailykos, demsdotcom, vindico, care2, upworthy)', /^(dailykos|demsdotcom|vindico|care2|upworthy)$/i)
+  .option('-p --preset <preset>', 'Convenience preset for poitical services and publications (google, dailykos, demsdotcom, vindico, care2, upworthy)', /^(google|dailykos|demsdotcom|vindico|care2|upworthy)$/i)
   .parse(process.argv)
 
-  # .description('
-  #   <compare> Compare an un-hashed email file to a hashed email file and display common emails or save them to a file. You can then use that file as a suppression list.
-  # ')
-  # .on('--help', () ->
-  #   console.log '  Examples:'
-  #   console.log
-  #   console.log '    $ deploy exec sequential'
-  #   console.log '    $ deploy exec async'
-  #   console.log
-  # )
-
-# if(program.rule)
-# if(program.preset)
-# console.log(program.options)
-
-# if(program.output)
-
-# switch cmd
-#   when compare
-#     # compare two files and display common emails or save them to a file
-#     console.log('Compare')
-#   when hash
-#     console.log('Hash')
 
 if !program.args[0]
   console.log 'No file input provided'
